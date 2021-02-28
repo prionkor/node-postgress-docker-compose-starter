@@ -1,0 +1,36 @@
+version: '3.7'
+
+services:
+  app:
+    container_name: recipe-app
+    restart: on-failure
+    depends_on: 
+      - postgres
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
+    ports: 
+      - '10000:3000'
+    environment: 
+      DB_HOST: 'postgres'
+      DB_USER: 'recipe'
+      DB_PASS: 'password'
+      DB_NAME: 'recipe'
+    volumes:
+      - /app/node_modules
+      - .:/app
+  postgres:
+    container_name: recipe-postgres
+    image: postgres:13.2-alpine
+    environment: 
+      POSTGRES_PASSWORD: 'password'
+      POSTGRES_USER: 'recipe'
+      POSTGRES_DB: 'recipe'
+    volumes:
+      - ./data:/var/lib/postgresql
+  adminer:
+    image: adminer
+    restart: on-failure
+    ports:
+      - 10010:8080
+        
